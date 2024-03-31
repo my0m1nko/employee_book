@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomDatePicker extends StatelessWidget {
   const CustomDatePicker({
-    Key? key,
+    super.key,
     required TextEditingController controller,
     required String labeltxt,
     required VoidCallback callback,
   })  : _controller = controller,
         _labeltxt = labeltxt,
-        _callback = callback,
-        super(key: key);
+        _callback = callback;
 
   final TextEditingController _controller;
   final String _labeltxt;
