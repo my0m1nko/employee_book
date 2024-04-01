@@ -30,13 +30,15 @@ class _EmployeeNotifierStreamScreenState
 
   @override
   Widget build(BuildContext context) {
-    final employees =
-        context.watch<EmployeeChangeNotifier>().employeeListStream;
+
+    final employees = context.watch<EmployeeChangeNotifier>().employeeListStream;
+        print(employees.length);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Employee Stream'),
       ),
-      body: ListView.builder(
+      body:
+      ListView.builder(
         itemCount: employees.length,
         itemBuilder: (context, index) {
           final EmployeeData employee = employees[index];

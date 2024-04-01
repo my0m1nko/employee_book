@@ -27,6 +27,7 @@ class AppDb extends _$AppDb {
   Future<List<EmployeeData>> getAllEmployees() async {
     return await select(employee).get();
   }
+ 
   Stream<List<EmployeeData>> getEmployeeStream() {
     return select(employee).watch();
   }

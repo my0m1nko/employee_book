@@ -13,7 +13,7 @@ class EmployeeChangeNotifier extends ChangeNotifier {
   List<EmployeeData> _employeeListStream = [];
   List<EmployeeData> get employeeListStream => _employeeListStream;
   EmployeeData? _employeeData;
-  EmployeeData get employeeData => _employeeData!;
+  EmployeeData? get employeeData => _employeeData;
   String _error = '';
   String get error => _error;
   bool _isAdded = false;
@@ -40,13 +40,14 @@ class EmployeeChangeNotifier extends ChangeNotifier {
 
   void getEmployeeStream() {
     _isLoading = true;
-    _appDb?.getEmployeeStream().listen((event) {
-      _employeeListStream = event;
-    });
-      _isLoading = false;
-      notifyListeners();
-
+    _appDb?.getEmployeeStream()
+      .listen((event) {
+        _employeeListStream = event;
+      }); 
+    _isLoading = false;
+    notifyListeners();
   }
+
 
   void getSingleEmployee(int id) {
     _isLoading = true;

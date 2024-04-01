@@ -1,4 +1,3 @@
-import 'package:employee_book/data/local/db/app_db.dart';
 import 'package:employee_book/screens/employee_notifier_future.dart';
 import 'package:employee_book/screens/employee_notifier_stream.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +10,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late AppDb _db;
+  // late AppDb _db;
   int _selectedIndex = 0;
-  final pages = [
-    const EmployeeNotifierFutureScreen(),
-    const EmployeeNotifierStreamScreen(),];
+  final pages = const [
+     EmployeeNotifierFutureScreen(),
+     EmployeeNotifierStreamScreen(),];
 
   @override
   void initState() {
-    _db = AppDb();
+    // _db = AppDb();
     super.initState();
   }
 
   @override
   void dispose() {
-    _db.close();
+    // _db.close();
     super.dispose();
   }
 
