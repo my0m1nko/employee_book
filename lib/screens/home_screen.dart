@@ -1,39 +1,86 @@
+import 'package:employee_book/data/local/db/app_db.dart';
+import 'package:employee_book/screens/employee_notifier_future.dart';
+import 'package:employee_book/screens/employee_notifier_stream.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late AppDb _db;
+  int _selectedIndex = 0;
+  final pages = [
+    const EmployeeNotifierFutureScreen(),
+    const EmployeeNotifierStreamScreen(),];
+
+  @override
+  void initState() {
+    _db = AppDb();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _db.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Home'),
+          title: const Text('Employee Book',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),),
+          backgroundColor: Colors.deepOrange,
+          centerTitle: true,
+          
         ),
-        body: const Column(
-          children: [
-            SizedBox(height: 8.0),
-            Text(
-              'Welcome to Employee Management System',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Click on the button below to add an employee',
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: pages[_selectedIndex],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          elevation: 10,
+          backgroundColor: Colors.white,
           onPressed: () {
             Navigator.pushNamed(context, '/add_employee');
           },
           child: const Icon(Icons.add),
-        ));
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          backgroundColor: Colors.deepOrange,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          showSelectedLabels: false,
+          showUnselectedLabels: true,
+          items: const [ 
+
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.list),
+              activeIcon: Icon(Icons.list_outlined),
+              label: 'Employee Future',
+            ),
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.list_outlined),
+              label: 'Employee Stream',
+            ),
+          ],
+        ),
+        );
   }
 }
