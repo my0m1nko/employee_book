@@ -1,5 +1,8 @@
+
+
 import 'package:employee_book/data/local/db/app_db.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
 
 class EmployeeChangeNotifier extends ChangeNotifier {
   AppDb? _appDb;
@@ -17,25 +20,30 @@ class EmployeeChangeNotifier extends ChangeNotifier {
   String _error = '';
   String get error => _error;
   bool _isAdded = false;
-  bool get added => _isAdded;
+  bool get  isAdded => _isAdded;
   bool _isUpdated = false;
-  bool get isUpdated => _isUpdated;
+  bool get  isUpdated => _isUpdated;
   bool _isDeleted = false;
-  bool get isDeleted => _isDeleted;
+  bool get  isDeleted => _isDeleted;
   bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  bool get  isLoading => _isLoading;
+  bool _isActive = false;
+  bool get isActive => _isActive;
 
   void getEmployeeFuture() {
     _isLoading = true;
-    _appDb?.getAllEmployees().then((value) {
-      _employeeListFuture = value;
-      _isLoading = false;
-      notifyListeners();
-    }).catchError((error) {
-      _error = error.toString();
-      _isLoading = false;
-      notifyListeners();
-    });
+
+    _appDb?.getEmployees()
+      .then((value) {
+        _employeeListFuture = value;
+        _isLoading = false;
+        notifyListeners();
+      })
+      .onError((error, stackTrace) {
+        _error = error.toString();
+        _isLoading = false;
+        notifyListeners();
+      });    
   }
 
   void getEmployeeStream() {
@@ -48,47 +56,85 @@ class EmployeeChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void getSingleEmployee(int id) {
-    _isLoading = true;
-    _appDb?.getEmpyloyeeById(id).then((value) {
-      _employeeData = value;
-      _isLoading = false;
-      notifyListeners();
-    }).catchError((error) {
-      _error = error.toString();
-      _isLoading = false;
-      notifyListeners();
-    });
+
+    _appDb?.getEmployee(id)
+      .then((value) {
+        _employeeData = value;
+        setIsActive(value.isActive == 1 ? true : false);
+        notifyListeners();
+      })
+      .onError((error, stackTrace) {
+        _error = error.toString();
+        notifyListeners();
+      });   
+
   }
 
-  void createEmployee(EmployeeCompanion employee) {
-    _appDb?.insertEmployee(employee).then((value) {
-      _isAdded = value >= 1 ? true : false;
-      notifyListeners();
-    }).catchError((error) {
-      _error = error.toString();
-      notifyListeners();
-    });
+  void createEmployee(EmployeeCompanion entity) {
+    _appDb?.insertEmployee(entity)
+      .then((value) {
+        _isAdded = value >= 1 ? true : false;
+        notifyListeners();
+      })
+      .onError((error, stackTrace) {
+        _error = error.toString();
+        notifyListeners();
+      });
+    
   }
 
-  updateEmployee(EmployeeCompanion employee) {
-    _appDb?.updateEmployee(employee).then((value) {
+  void updateEmployee(EmployeeCompanion entity) {
+    _appDb?.updateEmployee(entity)
+    .then((value) {
       _isUpdated = value;
-      notifyListeners();
-    }).onError((error, stackTrace) {
+       notifyListeners();
+    })
+    .onError((error, stackTrace) {
       _error = error.toString();
-      notifyListeners();
+       notifyListeners();
     });
+
+   
   }
 
   void deleteEmployee(int id) {
-    _appDb?.deleteEmployee(id).then((value) {
-      _isDeleted = value == 1 ? true : false;
-      notifyListeners();
-    }).catchError((error) {
-      _error = error.toString();
-      notifyListeners();
-    });
+    _appDb?.deleteEmployee(id)
+      .then((value) {
+        if (value == 0) {
+          _error = 'No record was found';
+        }
+        else {
+          _isDeleted = true;
+        }        
+        notifyListeners();
+
+      })
+      .onError((error, stackTrace) {
+        _error = error.toString();
+        notifyListeners();
+      });  
+
   }
+
+  void setIsActive(bool value) {
+    _isActive = value;
+    notifyListeners();
+  }
+
+  void setIsUpdated(bool value) {
+    _isUpdated = value;
+    notifyListeners();
+  }
+
+  void setIsDeleted(bool value) {
+    _isDeleted = value;
+    notifyListeners();
+  }
+
+  void setErrorMsg(String value) {
+    _error = value;
+    notifyListeners();
+  }
+  
 }
